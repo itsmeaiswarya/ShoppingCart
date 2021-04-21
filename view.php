@@ -17,19 +17,21 @@
 			if(isset($_POST["add-to-cart"])){
 				if(isset($_SESSION["cartDB"]))
 				{
-					$id_array=array_column($_SESSION["cartDB"],"id");
-					if(!in_array($_GET["id"],$id_array))
+					$id_array=array_column($_SESSION["cartDB"],"pid");
+					if(!in_array($_GET["id"],$pid_array))
 					{
 						$index=count($_SESSION["cartDB"]);
 						$item=array(
-							'id' => $_POST["id"],
+							'pid' => $_POST["id"],
 							'name' => $_POST["name"],
 							'price' => $_POST["price"],
+							'quantity' => $_POST["quantity"]
 						
 						);
 						$_SESSION["cartDB"][$index]=$item;
+						
 							echo "<script>alert('Product Added..');</script>";
-						header("location:viewCart.php");
+						
 					}
 					else
 					{
@@ -39,14 +41,17 @@
 				else
 				{
 						$item=array(
-							'id' => $_POST["id"],
+							'pid' => $_POST["id"],
 							'name' => $_POST["name"],
 							'price' => $_POST["price"],
-							'image' => $_POST["image"]
+							'image' => $_POST["image"],
+							'quantity' => $_POST["quantity"]
 						);
 						$_SESSION["cartDB"][0]=$item;
+						
+
 						echo "<script>alert('Product Added..');</script>";
-						header("location:viewCart.php");
+						
 				}
 			} ?>
 			
@@ -68,13 +73,6 @@ mysqli_close($conn);
 <!DOCTYPE html>
 <html>
 
- <?php 
- ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
- ?>
  <h4 class="center grey-text"><center>SHOPPING CART</center></h4>
 
  <div class="container">
@@ -101,14 +99,14 @@ error_reporting(E_ALL);
          
 
   		</tr>
-  	<form action="view.php" method="POST"> 
-
+  	
 
   		<tr>
 
 
 
 <?php foreach($stocks as $stock){ ?>
+<form action="view.php" method="POST"> 
 
       <div class="col s6 md3">
       <div class="card z-depth-0">
@@ -122,8 +120,8 @@ error_reporting(E_ALL);
             
     <td><p><input type="text"  placeholder="Enter Quantity" name="quantity"  class="form-control"></p></td>
 	<p><input type="hidden"  name="name" value="<?php echo htmlspecialchars($stock['name']); ?>" class="form-control"></p>
-	<p><input type="hidden"  name="price" value="'.<?php echo $stock['price']; ?>.'" class="form-control"></p>
-	<p><input type="hidden"  name="id" value="'.<?php echo $stock['id']; ?>.'" class="form-control"></p>
+	<p><input type="hidden"  name="price" value="<?php echo $stock['price']; ?>" class="form-control"></p>
+	<p><input type="hidden"  name="id" value="<?php echo $stock['id']; ?>" class="form-control"></p>
     
 
           </div>
@@ -136,14 +134,16 @@ error_reporting(E_ALL);
   </div>
 </div>
 <div class="col s6 md3"></div>
-
+</form>
    <?php } ?>
   </div>
 </tr>
-</form>
+
 </table>
 </div>
 
 </body>
 </html>
+
+
 
