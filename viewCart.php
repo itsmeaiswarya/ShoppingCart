@@ -1,7 +1,11 @@
 <?php 
 	include "config.php";
 	session_start();
+	$abc = $_SESSION["cartDB"];
+
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,34 +32,38 @@
 					<th>Total</th>
 					<th>Remove</th>
 				</tr>
+
 				<?php 
 				if(isset($_GET["del"]))
 				{
-					foreach($_SESSION["cartDB"] as $keys=>$values)
+					foreach($abc as $u)
 					{
-							if($values["id"]==$_GET["del"])
+							if($u["id"]==$_GET["del"])
 							{
 								unset($_SESSION["cartDB"][$keys]);
 							}
 					}
 				}
-					if(!empty($_SESSION["cartDB"]))
+					if(!empty($abc))
 					{
 							$total=0;
-							foreach($_SESSION["cartDB"] as $keys=>$values)
+							foreach($abc as $u)
 							{
-								$amt=$values["quantity"]*$values["price"];
+								$amt=(int)$u["quantity"]*(int)$u["price"];
 									$total+=$amt;
-									echo "
-											<tr>
-												<td>{$values["name"]}</td>
-												<td>{$values["quantity"]}</td>
-												<td>{$values["price"]}</td>
-												<td>{$amt}</td>
-												<td><a href='viewCart.php?del={$values["id"]}'>Remove</a></td>
+									?>
+
+									<tr>
+												<td><?php echo $u["name"]; ?></td>
+												<td><?php echo $u["quantity"]; ?></td>
+												<td><?php echo $u["price"]; ?></td>
+												<td><?php echo $amt; ?></td>
+												<td><a href='viewCart.php?del=<?php echo $u["id"];?>'>Remove</a></td>
 											</tr>
-									";
+
 									
+
+								<?php	
 							}	
 								echo "
 											<tr>
